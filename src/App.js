@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import Card from "./components/card/Card";
+import Flatpickr from "react-flatpickr";
+import "flatpickr/dist/flatpickr.css";
 import axios from "axios";
 import "./App.css";
 
@@ -7,23 +9,24 @@ function App() {
   const [data, setData] = useState();
   const [filters, setFilters] = useState();
   const [filteredData, setFilteredData] = useState(data);
+
   const [theme, setTheme] = useState();
   const [searchQuery, setSearchQuery] = useState();
   const [checkboxTags, setCheckboxTags] = useState([]);
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
 
   useEffect(() => {
     axios("https://tiesibsargs.turn.lv/wp-json/ties-api/v1/resources").then(
       (res) => {
         setData(res.data);
         setFilteredData(res.data);
-        console.log(res.data);
       }
     );
     axios(
       "https://tiesibsargs.turn.lv/wp-json/ties-api/v1/resources/filters"
     ).then((res) => {
       setFilters(res.data);
-      console.log(res.data);
     });
   }, []);
 
@@ -52,6 +55,30 @@ function App() {
         return selectedCheckboxValues.includes(item.categoryID);
       });
     }
+
+    // Apply date filter
+    if (startDate && !endDate) {
+      const dateStart = new Date(startDate);
+      filteredArray = filteredArray.filter((item) => {
+        const itemDate = new Date(item.date);
+        return itemDate >= dateStart;
+      });
+    } else if (!startDate && endDate) {
+      const dateEnd = new Date(endDate);
+      filteredArray = filteredArray.filter((item) => {
+        const itemDate = new Date(item.date);
+        return itemDate <= dateEnd;
+      });
+    } else if (startDate && endDate) {
+      const dateStart = new Date(startDate);
+      const dateEnd = new Date(endDate);
+      filteredArray = filteredArray.filter((item) => {
+        const itemDate = new Date(item.date);
+        return itemDate >= dateStart && itemDate <= dateEnd;
+      });
+    }
+
+    console.log(filteredArray);
 
     return filteredArray;
   };
@@ -84,6 +111,11 @@ function App() {
     }
   };
 
+  const filterDataByDateHandler = () => {
+    const filteredArray = applyFilters(searchQuery, theme, checkboxTags);
+    setFilteredData(filteredArray);
+  };
+
   return (
     <div className="App">
       <div style={{ display: "flex" }} key="';l">
@@ -100,6 +132,28 @@ function App() {
             }}
             key="ASDASDAS"
           ></input>
+          <div>
+            <Flatpickr
+              onChange={(e) => {
+                e.length > 0 ? setStartDate(e) : setStartDate("");
+              }}
+            />
+            start
+            <Flatpickr
+              onChange={(e) => {
+                e.length > 0 ? setEndDate(e) : setEndDate("");
+              }}
+            />
+            end
+          </div>
+          <button
+            onClick={() => {
+              filterDataByDateHandler();
+            }}
+          >
+            Run date filter
+          </button>
+
           {filters?.themes.map((theme) => {
             return (
               <div key={theme.id}>
@@ -128,7 +182,7 @@ function App() {
                           id={child.id}
                           key={child.id}
                         >
-                          {theme.title}
+                          {child.title}
                         </button>
                       </div>
                     );
