@@ -60,7 +60,7 @@ const FilterPanel = ({ data, filters, setFilteredData }) => {
       });
     }
 
-    console.log(filteredArray);
+    console.log(startDate, endDate);
 
     return filteredArray;
   };
@@ -166,18 +166,17 @@ const FilterPanel = ({ data, filters, setFilteredData }) => {
         })}
         <div className="dateSection">
           <Flatpickr
-            options={{ allowInput: true }}
             className="dateInput"
-            onChange={(e) => {
-              e.length > 0 ? setStartDate(e) : setStartDate("");
+            onChange={(date, str, config) => {
+              setStartDate(config.input.value);
             }}
           />
           <p style={{ marginTop: "20px", fontSize: "40px" }}>-</p>
           <Flatpickr
-            options={{ allowInput: true }}
+            defaultValue=""
             className="dateInput"
-            onChange={(e) => {
-              e.length > 0 ? setEndDate(e) : setEndDate("");
+            onChange={(date, str, config) => {
+              setEndDate(config.input.value);
             }}
           />
           <button
