@@ -4,7 +4,6 @@ import "./FilterPanel.css";
 import { useState } from "react";
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.css";
-import Select from "react-select";
 
 const FilterPanel = ({ data, filters, setFilteredData }) => {
   const [theme, setTheme] = useState({ parent: null, id: null });
@@ -29,12 +28,8 @@ const FilterPanel = ({ data, filters, setFilteredData }) => {
       const parent = filters.themes.find(
         (filter) => filter.id === selectedThemeId.id
       );
-
-      console.log(parent);
       // Getting all childs ids from parent obj
       const childIds = parent.children.map((child) => child.id);
-
-      console.log(childIds);
 
       filteredArray = filteredArray.filter((item) =>
         item.linkedThemes.some((theme) => childIds.includes(parseInt(theme.id)))
@@ -111,16 +106,9 @@ const FilterPanel = ({ data, filters, setFilteredData }) => {
     setFilteredData(filteredArray);
   };
 
-  const options = [
-    { value: "chocolate", label: "Chocolate" },
-    { value: "strawberry", label: "Strawberry" },
-    { value: "vanilla", label: "Vanilla" },
-  ];
-
   return (
     <>
       <div className="filtersWrapper">
-        <Select options={options} />
         <h1>Meklēt</h1>
         <input
           type="search"
