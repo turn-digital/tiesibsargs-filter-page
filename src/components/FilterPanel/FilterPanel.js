@@ -4,9 +4,10 @@ import "./FilterPanel.css";
 import { useState } from "react";
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.css";
+import Select from "react-select";
 
 const FilterPanel = ({ data, filters, setFilteredData }) => {
-  const [theme, setTheme] = useState();
+  const [theme, setTheme] = useState({ parent: null, id: null });
   const [searchQuery, setSearchQuery] = useState();
   const [checkboxTags, setCheckboxTags] = useState([]);
   const [startDate, setStartDate] = useState();
@@ -23,10 +24,25 @@ const FilterPanel = ({ data, filters, setFilteredData }) => {
     }
 
     // Apply theme filter
-    if (selectedThemeId) {
+    if (selectedThemeId.parent) {
+      // Getting parent obj from filters
+      const parent = filters.themes.find(
+        (filter) => filter.id === selectedThemeId.id
+      );
+
+      console.log(parent);
+      // Getting all childs ids from parent obj
+      const childIds = parent.children.map((child) => child.id);
+
+      console.log(childIds);
+
+      filteredArray = filteredArray.filter((item) =>
+        item.linkedThemes.some((theme) => childIds.includes(parseInt(theme.id)))
+      );
+    } else if (selectedThemeId.id) {
       filteredArray = filteredArray.filter((obj) =>
         obj.linkedThemes.some(
-          (theme) => parseInt(theme.id) === parseInt(selectedThemeId)
+          (theme) => parseInt(theme.id) === parseInt(selectedThemeId.id)
         )
       );
     }
@@ -59,9 +75,6 @@ const FilterPanel = ({ data, filters, setFilteredData }) => {
         return itemDate >= dateStart && itemDate <= dateEnd;
       });
     }
-
-    console.log(startDate, endDate);
-
     return filteredArray;
   };
 
@@ -98,9 +111,16 @@ const FilterPanel = ({ data, filters, setFilteredData }) => {
     setFilteredData(filteredArray);
   };
 
+  const options = [
+    { value: "chocolate", label: "Chocolate" },
+    { value: "strawberry", label: "Strawberry" },
+    { value: "vanilla", label: "Vanilla" },
+  ];
+
   return (
     <>
       <div className="filtersWrapper">
+        <Select options={options} />
         <h1>Meklēt</h1>
         <input
           type="search"
@@ -115,9 +135,8 @@ const FilterPanel = ({ data, filters, setFilteredData }) => {
                 role="menuitem"
                 style={{ minWidth: "200px" }}
                 onClick={() => {
-                  setTheme(theme.id);
-                  themeHandler(theme.id);
-                  console.log(theme.id);
+                  setTheme({ parent: true, id: theme.id });
+                  themeHandler({ parent: true, id: theme.id });
                 }}
                 value={theme.id}
                 id={theme.id}
@@ -131,9 +150,8 @@ const FilterPanel = ({ data, filters, setFilteredData }) => {
                     <ul key={child.id} role="menu" className="themeFilter">
                       <li
                         onClick={() => {
-                          setTheme(child.id);
-                          themeHandler(child.id);
-                          console.log(child.id);
+                          setTheme({ parent: false, id: child.id });
+                          themeHandler({ parent: false, id: child.id });
                         }}
                         value={child.id}
                         id={child.id}
@@ -173,7 +191,6 @@ const FilterPanel = ({ data, filters, setFilteredData }) => {
           />
           <p style={{ marginTop: "20px", fontSize: "40px" }}>-</p>
           <Flatpickr
-            defaultValue=""
             className="dateInput"
             onChange={(date, str, config) => {
               setEndDate(config.input.value);
