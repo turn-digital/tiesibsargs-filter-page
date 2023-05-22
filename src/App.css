@@ -1,9 +1,0 @@
-.app {
-  display: grid;
-  grid-row-gap: 36px;
-  grid-column-gap: 42px;
-  grid-template-columns: 4fr 8fr;
-  padding-left: 110px;
-  padding-right: 110px;
-  background-color: #f6f6f6;
-}

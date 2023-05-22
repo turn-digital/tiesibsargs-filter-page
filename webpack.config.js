@@ -6,7 +6,7 @@ module.exports = {
   mode: "production",
   output: {
     path: path.resolve(__dirname, "build"),
-    filename: "postPage.js",
+    filename: "filter-bundle.js",
   },
   module: {
     // exclude node_modules
@@ -17,8 +17,24 @@ module.exports = {
         use: ["babel-loader"],
       },
       {
+        test: /\.s[ac]ss$/,
+        use: [
+          // Creates `style` nodes from JS strings
+          "style-loader",
+          // Translates CSS into CommonJS
+          "css-loader",
+          // Compiles Sass to CSS
+          "sass-loader",
+        ],
+      },
+      { //added for components with importing packages that use css
         test: /\.css$/,
-        use: ["style-loader", "css-loader"],
+        use: [
+          // Creates `style` nodes from JS strings
+          "style-loader",
+          // Translates CSS into CommonJS
+          "css-loader",
+        ],
       },
     ],
   },

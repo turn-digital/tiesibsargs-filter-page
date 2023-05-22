@@ -1,7 +1,4 @@
-import React from "react";
-import "./FilterPanel.css";
-
-import { useState } from "react";
+import React, { useState } from "react";
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.css";
 
@@ -14,12 +11,13 @@ import {
 } from "react-accessible-accordion";
 import "react-accessible-accordion/dist/fancy-example.css";
 
-const FilterPanel = ({ data, filters, setFilteredData }) => {
+const FilterPanel = ({ data, filters, setFilteredData, translations }) => {
   const [theme, setTheme] = useState({ parent: null, id: null });
   const [searchQuery, setSearchQuery] = useState();
   const [checkboxTags, setCheckboxTags] = useState([]);
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
+  console.log(filters);
 
   const applyFilters = (query, selectedThemeId, selectedCheckboxValues) => {
     let filteredArray = [...data];
@@ -34,6 +32,7 @@ const FilterPanel = ({ data, filters, setFilteredData }) => {
     // Apply theme filter
     if (selectedThemeId.parent) {
       // Getting parent obj from filters
+      console.log("check:", filters);
       const parent = filters.themes.find(
         (filter) => filter.id === selectedThemeId.id
       );
@@ -115,10 +114,12 @@ const FilterPanel = ({ data, filters, setFilteredData }) => {
     setFilteredData(filteredArray);
   };
 
+  console.log("translations", translations);
+
   return (
     <>
       <div className="filtersWrapper">
-        <h1>Meklēt</h1>
+        <h2>{translations.search}</h2>
         <input
           type="search"
           className="searchFilter"
@@ -127,53 +128,64 @@ const FilterPanel = ({ data, filters, setFilteredData }) => {
         ></input>
 
         <Accordion allowZeroExpanded style={{ marginTop: "40px" }}>
-          <AccordionItem key={"asda"}>
+          <AccordionItem>
             <AccordionItemHeading>
               <AccordionItemButton>Tiesību jomas</AccordionItemButton>
             </AccordionItemHeading>
             <AccordionItemPanel>
               <Accordion allowZeroExpanded>
-                {filters?.themes.map((theme) => (
-                  <AccordionItem key={theme.id}>
-                    <AccordionItemHeading
-                      onClick={() => {
-                        setTheme({ parent: true, id: theme.id });
-                        themeHandler({ parent: true, id: theme.id });
-                      }}
-                    >
-                      <AccordionItemButton>{theme.title}</AccordionItemButton>
-                    </AccordionItemHeading>
-                    <AccordionItemPanel>
-                      {theme?.children?.length > 0 &&
-                        theme.children.map((child) => {
-                          return (
-                            <ul
-                              key={child.id}
-                              role="menu"
-                              className="themeFilter"
-                            >
-                              <li
-                                onClick={() => {
-                                  setTheme({ parent: false, id: child.id });
-                                  themeHandler({ parent: false, id: child.id });
-                                }}
-                                value={child.id}
+                {filters?.themes.map((theme) =>
+                  theme?.children?.length > 0 ? (
+                    <AccordionItem key={theme.id}>
+                      <AccordionItemHeading
+                        onClick={() => {
+                          setTheme({ parent: true, id: theme.id });
+                          themeHandler({ parent: true, id: theme.id });
+                        }}
+                      >
+                        <AccordionItemButton>{theme.title}</AccordionItemButton>
+                      </AccordionItemHeading>
+                      <AccordionItemPanel>
+                        {theme?.children?.length > 0 &&
+                          theme.children.map((child) => {
+                            return (
+                              <button
                                 id={child.id}
                                 key={child.id}
+                                className="cc-resources__theme-btn"
+                                onClick={() => {
+                                  setTheme({ parent: false, id: child.id });
+                                  themeHandler({
+                                    parent: false,
+                                    id: child.id,
+                                  });
+                                }}
                               >
                                 {child.title}
-                              </li>
-                            </ul>
-                          );
-                        })}
-                    </AccordionItemPanel>
-                  </AccordionItem>
-                ))}
+                              </button>
+                            );
+                          })}
+                      </AccordionItemPanel>
+                    </AccordionItem>
+                  ) : (
+                    <p className="cc-resources__theme-title">
+                      <button
+                        className="cc-resources__theme-btn"
+                        onClick={() => {
+                          setTheme({ parent: true, id: theme.id });
+                          themeHandler({ parent: true, id: theme.id });
+                        }}
+                      >
+                        {theme.title}
+                      </button>
+                    </p>
+                  )
+                )}
               </Accordion>
             </AccordionItemPanel>
           </AccordionItem>
 
-          <AccordionItem key={"asda"}>
+          <AccordionItem>
             <AccordionItemHeading>
               <AccordionItemButton>Satura veids</AccordionItemButton>
             </AccordionItemHeading>
@@ -197,7 +209,7 @@ const FilterPanel = ({ data, filters, setFilteredData }) => {
             </AccordionItemPanel>
           </AccordionItem>
 
-          <AccordionItem key={"asda"}>
+          <AccordionItem>
             <AccordionItemHeading>
               <AccordionItemButton>Periods</AccordionItemButton>
             </AccordionItemHeading>

@@ -1,13 +1,31 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { QueryClient, QueryClientProvider } from "react-query";
+import customTranslations from "./assets/localize/translations.js";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const rootElement = document.getElementById("root");
+const translationsString = rootElement.getAttribute("data-translations");
+const translations = JSON.parse(translationsString);
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    // FIX ME! Query options need to be initialized inside useSimpleGet -> useQuery hook,
+    // otherwise location.href changes are not detected
+    queries: {
+      refetchOnWindowFocus: false,
+      staleTime: Infinity,
+    },
+  },
+});
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App />
+    <QueryClientProvider client={queryClient}>
+      <App translations={translations ? translations : customTranslations} />
+    </QueryClientProvider>
   </React.StrictMode>
 );
 
