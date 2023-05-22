@@ -1,0 +1,56 @@
+.cc-resources {
+  &__theme {
+    &-title {
+      margin: 0;
+      padding: 6px 32px 6px 0;
+    }
+
+    &-btn {
+      margin: 0;
+      padding: 0;
+      display: block;
+      background-color: transparent;
+      border: none;
+      text-align: left;
+    }
+  }
+
+  .accordion {
+    border: none;
+
+    &__button {
+      position: relative;
+      padding: 6px 32px 6px 0;
+      background-color: transparent;
+      font-weight: bold;
+
+      &::before {
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%) rotate(45deg);
+        transform-origin: center;
+        transition: all 0.3s ease-in-out;
+      }
+
+      &[aria-expanded="true"]::before {
+        transform: translateY(-50%) rotate(-135deg);
+      }
+
+      &:hover {
+        color: $cc-primary;
+        background-color: transparent;
+      }
+    }
+    .accordion .accordion__button {
+      font-weight: 400;
+    }
+  }
+
+  @media (min-width: 768px) {
+    display: grid;
+    grid-row-gap: 36px;
+    grid-column-gap: 42px;
+    grid-template-columns: 4fr 8fr;
+  }
+}

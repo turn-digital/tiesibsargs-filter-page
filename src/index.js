@@ -1,13 +1,26 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { QueryClient, QueryClientProvider } from "react-query";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const queryClient = new QueryClient({
+  defaultOptions: {
+    // FIX ME! Query options need to be initialized inside useSimpleGet -> useQuery hook,
+    // otherwise location.href changes are not detected
+    queries: {
+      refetchOnWindowFocus: false,
+      staleTime: Infinity,
+    },
+  },
+});
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App />
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
   </React.StrictMode>
 );
 
