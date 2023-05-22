@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.css";
 
@@ -17,9 +17,53 @@ const FilterPanel = ({ data, filters, setFilteredData, translations }) => {
   const [checkboxTags, setCheckboxTags] = useState([]);
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
-  console.log(filters);
 
-  const applyFilters = (query, selectedThemeId, selectedCheckboxValues) => {
+  const [test, setTest] = useState();
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    const queryParam = urlParams.get("search");
+    setSearchQuery(queryParam);
+
+    const mainThemeParam = urlParams.get("mainTheme");
+    const subThemeParam = urlParams.get("subTheme");
+    const checkboxParams = urlParams.get("checkboxes");
+    const startDateParam = urlParams.get("startDate");
+    const endDateParam = urlParams.get("endDate");
+
+    setTest(endDateParam);
+
+    const selectedThemeId = {
+      parent: mainThemeParam ? JSON.parse(mainThemeParam) : null,
+      id: subThemeParam ? JSON.parse(subThemeParam) : null,
+    };
+    setTheme(selectedThemeId);
+
+    const selectedCheckboxValues = checkboxParams
+      ? checkboxParams.split(",").map((value) => parseInt(value))
+      : [];
+    setCheckboxTags(selectedCheckboxValues);
+
+    const filteredArray = applyFilters(
+      queryParam,
+      selectedThemeId,
+      selectedCheckboxValues,
+      startDateParam,
+      endDateParam
+    );
+    setFilteredData(filteredArray);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const applyFilters = (
+    query,
+    selectedThemeId,
+    selectedCheckboxValues,
+    startDate,
+    endDate
+  ) => {
     let filteredArray = [...data];
 
     // Apply search filter
@@ -32,10 +76,10 @@ const FilterPanel = ({ data, filters, setFilteredData, translations }) => {
     // Apply theme filter
     if (selectedThemeId.parent) {
       // Getting parent obj from filters
-      console.log("check:", filters);
       const parent = filters.themes.find(
-        (filter) => filter.id === selectedThemeId.id
+        (filter) => filter.id === parseInt(selectedThemeId.id)
       );
+
       // Getting all childs ids from parent obj
       const childIds = parent.children.map((child) => child.id);
 
@@ -78,18 +122,65 @@ const FilterPanel = ({ data, filters, setFilteredData, translations }) => {
         return itemDate >= dateStart && itemDate <= dateEnd;
       });
     }
+
+    const currentUrl = new URL(window.location.href);
+    const searchParams = new URLSearchParams(currentUrl.search);
+
+    searchParams.set("search", query ? query : "");
+
+    // Add theme parameter for parent theme
+
+    searchParams.set(
+      "mainTheme",
+      selectedThemeId.parent ? selectedThemeId.parent : ""
+    );
+
+    // Add theme parameter for child theme
+
+    searchParams.set("subTheme", selectedThemeId.id ? selectedThemeId.id : "");
+
+    // Add checkbox values parameter
+
+    searchParams.set(
+      "checkboxes",
+      selectedCheckboxValues ? selectedCheckboxValues.join(",") : ""
+    );
+
+    // Add start and end date parameters
+
+    searchParams.set("startDate", startDate ? startDate : "");
+
+    searchParams.set("endDate", endDate ? endDate : "");
+
+    currentUrl.search = searchParams.toString();
+
+    // Update the URL in the address bar without reloading the page
+    window.history.replaceState({}, "", currentUrl.toString());
+
     return filteredArray;
   };
 
   const filterBySearch = (event) => {
     setSearchQuery(event.target.value);
     const query = event.target.value;
-    const filteredArray = applyFilters(query, theme, checkboxTags);
+    const filteredArray = applyFilters(
+      query,
+      theme,
+      checkboxTags,
+      startDate,
+      endDate
+    );
     setFilteredData(filteredArray);
   };
 
   const themeHandler = (themeId) => {
-    const filteredArray = applyFilters(searchQuery, themeId, checkboxTags);
+    const filteredArray = applyFilters(
+      searchQuery,
+      themeId,
+      checkboxTags,
+      startDate,
+      endDate
+    );
     setFilteredData(filteredArray);
   };
 
@@ -104,23 +195,34 @@ const FilterPanel = ({ data, filters, setFilteredData, translations }) => {
     if (newCheckedTags.length === 0) {
       setFilteredData(applyFilters(searchQuery, theme, []));
     } else {
-      const filteredArray = applyFilters(searchQuery, theme, newCheckedTags);
+      const filteredArray = applyFilters(
+        searchQuery,
+        theme,
+        newCheckedTags,
+        startDate,
+        endDate
+      );
       setFilteredData(filteredArray);
     }
   };
 
   const filterDataByDateHandler = () => {
-    const filteredArray = applyFilters(searchQuery, theme, checkboxTags);
+    const filteredArray = applyFilters(
+      searchQuery,
+      theme,
+      checkboxTags,
+      startDate,
+      endDate
+    );
     setFilteredData(filteredArray);
   };
-
-  console.log("translations", translations);
 
   return (
     <>
       <div className="filtersWrapper">
         <h2>{translations.search}</h2>
         <input
+          defaultValue={searchQuery}
           type="search"
           className="searchFilter"
           placeholder="Meklēt pēc atslēgvārda"
@@ -196,6 +298,7 @@ const FilterPanel = ({ data, filters, setFilteredData, translations }) => {
                     <label htmlFor={category.id} key={category.id}>
                       <input
                         type="checkbox"
+                        checked={checkboxTags.includes(category.id)}
                         onChange={checkboxHandler}
                         value={category.id}
                         id={category.id}
