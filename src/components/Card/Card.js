@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import "./Card.css";
-
 import ReactPaginate from "react-paginate";
 
 const Card = (props) => {
@@ -11,23 +9,29 @@ const Card = (props) => {
       <>
         {currentItems?.map((card, index) => {
           return (
-            <div className="card" key={index}>
-              <p className="date">
-                {card.date} {card.category}
-              </p>
-              <p className="content">
-                <a href={card?.link}>{card.title}</a>
-              </p>
-              <hr />
-
-              <div>
-                {card.linkedThemes?.map((item, i) => (
-                  <a href={item.link ? item.link : ""} className="link" key={i}>
-                    {item.name}
-                  </a>
-                ))}
+            <article className="card-article" key={index}>
+              <div className="card-article__box">
+                <time className="card-article__time">{card.date}</time>
+                <p className="card-article__subtitle"> {card.category}</p>
               </div>
-            </div>
+              <div className="card-article__tags">
+                <a className="card-article__title-link" href={card?.link}>
+                  <h3 className="card-article__title">{card.title}</h3>
+                </a>
+                <ul className="card-article__items">
+                  {card.linkedThemes?.map((item, i) => (
+                    <li key={i}>
+                      <a
+                        href={item.link ? item.link : ""}
+                        className="card-article__link"
+                      >
+                        {item.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </article>
           );
         })}
       </>
@@ -39,7 +43,7 @@ const Card = (props) => {
   // Simulate fetching items from another resources.
   // (This could be items from props; or items loaded in a local state
   // from an API endpoint with useEffect and useState)
-  console.log("items", items);
+
   const itemsPerPage = 9;
   const endOffset = itemOffset + itemsPerPage;
   const currentItems = items?.slice(itemOffset, endOffset);
@@ -55,8 +59,8 @@ const Card = (props) => {
   };
 
   return (
-    <div className="cardsWrapper">
-      <div style={{ textAlign: "right" }}>{props?.data?.length}</div>
+    <div className="cc-resources__cards">
+      <div>{props?.data?.length}</div>
       <Items currentItems={currentItems} />
       <ReactPaginate
         nextLabel="next >"

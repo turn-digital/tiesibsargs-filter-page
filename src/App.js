@@ -5,7 +5,7 @@ import axios from "axios";
 import "./assets/scss/style.scss";
 import FilterPanel from "./components/FilterPanel/FilterPanel";
 
-function App() {
+function App({ translations }) {
   const resources = useQuery("resources", () =>
     axios
       .get("https://tiesibsargs.turn.lv/wp-json/ties-api/v1/resources")
@@ -19,13 +19,14 @@ function App() {
   );
 
   const PageLoaded = ({ resourcesData, filterData }) => {
-    const [filteredData, setFilteredData] = useState(filterData);
+    const [filteredData, setFilteredData] = useState(resourcesData);
     return (
       <div className="cc-resources">
         <FilterPanel
           data={resourcesData}
           filters={filterData}
           setFilteredData={setFilteredData}
+          translations={translations}
         />
         <Card data={filteredData} />
       </div>

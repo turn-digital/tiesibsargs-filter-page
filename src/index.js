@@ -3,6 +3,11 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { QueryClient, QueryClientProvider } from "react-query";
+import customTranslations from "./assets/localize/translations.js";
+
+const rootElement = document.getElementById("root");
+const translationsString = rootElement.getAttribute("data-translations");
+const translations = JSON.parse(translationsString);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,7 +24,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <App />
+      <App translations={translations ? translations : customTranslations} />
     </QueryClientProvider>
   </React.StrictMode>
 );

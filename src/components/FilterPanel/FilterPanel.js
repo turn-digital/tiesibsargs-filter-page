@@ -1,7 +1,4 @@
-import React from "react";
-import "./FilterPanel.css";
-
-import { useState } from "react";
+import React, { useState } from "react";
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.css";
 
@@ -14,7 +11,7 @@ import {
 } from "react-accessible-accordion";
 import "react-accessible-accordion/dist/fancy-example.css";
 
-const FilterPanel = ({ data, filters, setFilteredData }) => {
+const FilterPanel = ({ data, filters, setFilteredData, translations }) => {
   const [theme, setTheme] = useState({ parent: null, id: null });
   const [searchQuery, setSearchQuery] = useState();
   const [checkboxTags, setCheckboxTags] = useState([]);
@@ -117,10 +114,12 @@ const FilterPanel = ({ data, filters, setFilteredData }) => {
     setFilteredData(filteredArray);
   };
 
+  console.log("translations", translations);
+
   return (
     <>
       <div className="filtersWrapper">
-        <h1>Meklēt</h1>
+        <h2>{translations.search}</h2>
         <input
           type="search"
           className="searchFilter"
