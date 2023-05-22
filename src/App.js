@@ -27,7 +27,7 @@ function App() {
           filters={filterData}
           setFilteredData={setFilteredData}
         />
-        <Card data={resourcesData} />
+        <Card data={filteredData} />
       </div>
     );
   };
