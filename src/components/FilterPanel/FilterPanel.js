@@ -18,21 +18,17 @@ const FilterPanel = ({ data, filters, setFilteredData, translations }) => {
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
 
-  const [test, setTest] = useState();
-
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
 
     const queryParam = urlParams.get("search");
-    setSearchQuery(queryParam);
-
     const mainThemeParam = urlParams.get("mainTheme");
     const subThemeParam = urlParams.get("subTheme");
     const checkboxParams = urlParams.get("checkboxes");
     const startDateParam = urlParams.get("startDate");
     const endDateParam = urlParams.get("endDate");
 
-    setTest(endDateParam);
+    setSearchQuery(queryParam);
 
     const selectedThemeId = {
       parent: mainThemeParam ? JSON.parse(mainThemeParam) : null,
@@ -44,6 +40,9 @@ const FilterPanel = ({ data, filters, setFilteredData, translations }) => {
       ? checkboxParams.split(",").map((value) => parseInt(value))
       : [];
     setCheckboxTags(selectedCheckboxValues);
+
+    setStartDate(startDateParam);
+    setEndDate(endDateParam);
 
     const filteredArray = applyFilters(
       queryParam,
@@ -225,14 +224,16 @@ const FilterPanel = ({ data, filters, setFilteredData, translations }) => {
           defaultValue={searchQuery}
           type="search"
           className="searchFilter"
-          placeholder="Meklēt pēc atslēgvārda"
+          placeholder={translations.searchInputPlaceholder}
           onChange={filterBySearch}
         ></input>
 
         <Accordion allowZeroExpanded style={{ marginTop: "40px" }}>
           <AccordionItem>
             <AccordionItemHeading>
-              <AccordionItemButton>Tiesību jomas</AccordionItemButton>
+              <AccordionItemButton>
+                {translations.areasOfLaw}
+              </AccordionItemButton>
             </AccordionItemHeading>
             <AccordionItemPanel>
               <Accordion allowZeroExpanded>
@@ -289,7 +290,9 @@ const FilterPanel = ({ data, filters, setFilteredData, translations }) => {
 
           <AccordionItem>
             <AccordionItemHeading>
-              <AccordionItemButton>Satura veids</AccordionItemButton>
+              <AccordionItemButton>
+                {translations.contentType}
+              </AccordionItemButton>
             </AccordionItemHeading>
             <AccordionItemPanel>
               {filters?.categories.map((category) => {
@@ -314,27 +317,40 @@ const FilterPanel = ({ data, filters, setFilteredData, translations }) => {
 
           <AccordionItem>
             <AccordionItemHeading>
-              <AccordionItemButton>Periods</AccordionItemButton>
+              <AccordionItemButton>{translations.date}</AccordionItemButton>
             </AccordionItemHeading>
             <AccordionItemPanel>
               <div className="dateSection">
-                <Flatpickr
-                  className="dateInput"
-                  onChange={(date, str, config) => {
-                    setStartDate(config.input.value);
-                  }}
-                />
+                {startDate !== undefined && (
+                  <Flatpickr
+                    className="dateInput"
+                    options={{
+                      dateFormat: "d.m.Y",
+                      defaultDate: startDate,
+                    }}
+                    onChange={(date, str, config) => {
+                      setStartDate(config.input.value);
+                    }}
+                  />
+                )}
+
                 <p style={{ marginTop: "15px", fontSize: "40px" }}>-</p>
-                <Flatpickr
-                  className="dateInput"
-                  onChange={(date, str, config) => {
-                    setEndDate(config.input.value);
-                  }}
-                />
+                {endDate !== undefined && (
+                  <Flatpickr
+                    options={{
+                      dateFormat: "d.m.Y",
+                      defaultDate: endDate,
+                    }}
+                    className="dateInput"
+                    onChange={(date, str, config) => {
+                      setEndDate(config.input.value);
+                    }}
+                  />
+                )}
                 <button
                   type="submit"
                   className="searchDateButton"
-                  aria-label="button for search"
+                  aria-label={translations.areaLabelButtonSearch}
                   value="Skatīt ziņas pa periodiem"
                   onClick={() => {
                     filterDataByDateHandler();

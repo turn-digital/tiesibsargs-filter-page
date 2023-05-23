@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import ReactPaginate from "react-paginate";
+import translations from "../../assets/localize/translations";
 
 const Card = (props) => {
   const items = props?.data;
@@ -7,33 +8,39 @@ const Card = (props) => {
   function Items({ currentItems }) {
     return (
       <>
-        {currentItems?.map((card, index) => {
-          return (
-            <article className="card-article" key={index}>
-              <div className="card-article__box">
-                <time className="card-article__time">{card.date}</time>
-                <p className="card-article__subtitle"> {card.category}</p>
-              </div>
-              <div className="card-article__tags">
-                <a className="card-article__title-link" href={card?.link}>
-                  <h3 className="card-article__title">{card.title}</h3>
-                </a>
-                <ul className="card-article__items">
-                  {card.linkedThemes?.map((item, i) => (
-                    <li key={i}>
-                      <a
-                        href={item.link ? item.link : ""}
-                        className="card-article__link"
-                      >
-                        {item.name}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </article>
-          );
-        })}
+        {currentItems.length ? (
+          <>
+            {currentItems?.map((card, index) => {
+              return (
+                <article className="card-article" key={index}>
+                  <div className="card-article__box">
+                    <time className="card-article__time">{card.date}</time>
+                    <p className="card-article__subtitle"> {card.category}</p>
+                  </div>
+                  <div className="card-article__tags">
+                    <a className="card-article__title-link" href={card?.link}>
+                      <h3 className="card-article__title">{card.title}</h3>
+                    </a>
+                    <ul className="card-article__items">
+                      {card.linkedThemes?.map((item, i) => (
+                        <li key={i}>
+                          <a
+                            href={item.link ? item.link : ""}
+                            className="card-article__link"
+                          >
+                            {item.name}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </article>
+              );
+            })}
+          </>
+        ) : (
+          <h1>{translations.filteredDataIsEmpty}</h1>
+        )}
       </>
     );
   }

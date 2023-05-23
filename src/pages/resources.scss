@@ -17,6 +17,11 @@
       font-size: 14px;
       line-height: 24px;
       text-align: left;
+
+      &:hover {
+        color: $cc-primary;
+        background-color: transparent;
+      }
     }
   }
 

@@ -34,9 +34,9 @@ function App({ translations }) {
   };
 
   return resources.isLoading || filters.isLoading ? (
-    <div>Loading...</div>
+    <div>{translations.loading}</div>
   ) : resources.isError || filters.isError ? (
-    <div>Error occurred while fetching data.</div>
+    <div>{translations.fetchError}</div>
   ) : (
     <PageLoaded resourcesData={resources.data} filterData={filters.data} />
   );
