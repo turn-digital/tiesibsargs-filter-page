@@ -237,25 +237,31 @@ const FilterPanel = ({ data, filters, setFilteredData, translations }) => {
             </AccordionItemHeading>
             <AccordionItemPanel>
               <Accordion allowZeroExpanded>
-                {filters?.themes.map((theme) =>
-                  theme?.children?.length > 0 ? (
-                    <AccordionItem key={theme.id}>
+                {filters?.themes.map((singleTheme) =>
+                  singleTheme?.children?.length > 0 ? (
+                    <AccordionItem key={singleTheme.id}>
                       <AccordionItemHeading
                         onClick={() => {
-                          setTheme({ parent: true, id: theme.id });
-                          themeHandler({ parent: true, id: theme.id });
+                          setTheme({ parent: true, id: singleTheme.id });
+                          themeHandler({ parent: true, id: singleTheme.id });
                         }}
                       >
-                        <AccordionItemButton>{theme.title}</AccordionItemButton>
+                        <AccordionItemButton>
+                          {singleTheme.title}
+                        </AccordionItemButton>
                       </AccordionItemHeading>
                       <AccordionItemPanel>
-                        {theme?.children?.length > 0 &&
-                          theme.children.map((child) => {
+                        {singleTheme?.children?.length > 0 &&
+                          singleTheme.children.map((child) => {
                             return (
                               <button
                                 id={child.id}
                                 key={child.id}
-                                className="cc-resources__theme-btn"
+                                className={
+                                  child.id === theme.id
+                                    ? "cc-resources__theme-active"
+                                    : "cc-resources__theme-btn"
+                                }
                                 onClick={() => {
                                   setTheme({ parent: false, id: child.id });
                                   themeHandler({
@@ -275,11 +281,11 @@ const FilterPanel = ({ data, filters, setFilteredData, translations }) => {
                       <button
                         className="cc-resources__theme-btn"
                         onClick={() => {
-                          setTheme({ parent: true, id: theme.id });
-                          themeHandler({ parent: true, id: theme.id });
+                          setTheme({ parent: true, id: singleTheme.id });
+                          themeHandler({ parent: true, id: singleTheme.id });
                         }}
                       >
-                        {theme.title}
+                        {singleTheme.title}
                       </button>
                     </p>
                   )
