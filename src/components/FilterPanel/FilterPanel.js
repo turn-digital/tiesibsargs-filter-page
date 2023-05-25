@@ -102,6 +102,10 @@ const FilterPanel = ({ data, filters, setFilteredData, translations }) => {
 
     // Apply date filter
     if (startDate && !endDate) {
+      console.log("A");
+      console.log("startDate", startDate);
+      console.log("endDate", endDate);
+
       const dateStart = new Date(startDate);
       filteredArray = filteredArray.filter((item) => {
         const itemDate = new Date(item.date);
@@ -109,6 +113,9 @@ const FilterPanel = ({ data, filters, setFilteredData, translations }) => {
       });
     } else if (!startDate && endDate) {
       const dateEnd = new Date(endDate);
+      console.log("B");
+      console.log("startDate", startDate);
+      console.log("endDate", endDate);
       filteredArray = filteredArray.filter((item) => {
         const itemDate = new Date(item.date);
         return itemDate <= dateEnd;
@@ -116,6 +123,9 @@ const FilterPanel = ({ data, filters, setFilteredData, translations }) => {
     } else if (startDate && endDate) {
       const dateStart = new Date(startDate);
       const dateEnd = new Date(endDate);
+      console.log("C");
+      console.log("startDate", startDate);
+      console.log("endDate", endDate);
       filteredArray = filteredArray.filter((item) => {
         const itemDate = new Date(item.date);
         return itemDate >= dateStart && itemDate <= dateEnd;
@@ -331,7 +341,7 @@ const FilterPanel = ({ data, filters, setFilteredData, translations }) => {
                   <Flatpickr
                     className="dateInput"
                     options={{
-                      dateFormat: "d.m.Y",
+                      // dateFormat: "d.m.Y",
                       defaultDate: startDate,
                     }}
                     onChange={(date, str, config) => {
@@ -343,11 +353,11 @@ const FilterPanel = ({ data, filters, setFilteredData, translations }) => {
                 <p style={{ marginTop: "15px", fontSize: "40px" }}>-</p>
                 {endDate !== undefined && (
                   <Flatpickr
+                    className="dateInput"
                     options={{
-                      dateFormat: "d.m.Y",
+                      // dateFormat: "d.m.Y",
                       defaultDate: endDate,
                     }}
-                    className="dateInput"
                     onChange={(date, str, config) => {
                       setEndDate(config.input.value);
                     }}
