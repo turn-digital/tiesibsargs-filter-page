@@ -102,30 +102,32 @@ const FilterPanel = ({ data, filters, setFilteredData, translations }) => {
 
     // Apply date filter
     if (startDate && !endDate) {
-      console.log("A");
-      console.log("startDate", startDate);
-      console.log("endDate", endDate);
-
-      const dateStart = new Date(startDate);
+      const transformedStartDate = `${startDate.split(".")[2]}-${
+        startDate.split(".")[1]
+      }-${startDate.split(".")[0]}`;
+      const dateStart = new Date(transformedStartDate);
       filteredArray = filteredArray.filter((item) => {
         const itemDate = new Date(item.date);
         return itemDate >= dateStart;
       });
     } else if (!startDate && endDate) {
-      const dateEnd = new Date(endDate);
-      console.log("B");
-      console.log("startDate", startDate);
-      console.log("endDate", endDate);
+      const transformedEndDate = `${endDate.split(".")[2]}-${
+        endDate.split(".")[1]
+      }-${endDate.split(".")[0]}`;
+      const dateEnd = new Date(transformedEndDate);
       filteredArray = filteredArray.filter((item) => {
         const itemDate = new Date(item.date);
         return itemDate <= dateEnd;
       });
     } else if (startDate && endDate) {
-      const dateStart = new Date(startDate);
-      const dateEnd = new Date(endDate);
-      console.log("C");
-      console.log("startDate", startDate);
-      console.log("endDate", endDate);
+      const transformedStartDate = `${startDate.split(".")[2]}-${
+        startDate.split(".")[1]
+      }-${startDate.split(".")[0]}`;
+      const transformedEndDate = `${endDate.split(".")[2]}-${
+        endDate.split(".")[1]
+      }-${endDate.split(".")[0]}`;
+      const dateStart = new Date(transformedStartDate);
+      const dateEnd = new Date(transformedEndDate);
       filteredArray = filteredArray.filter((item) => {
         const itemDate = new Date(item.date);
         return itemDate >= dateStart && itemDate <= dateEnd;
@@ -341,7 +343,7 @@ const FilterPanel = ({ data, filters, setFilteredData, translations }) => {
                   <Flatpickr
                     className="dateInput"
                     options={{
-                      // dateFormat: "d.m.Y",
+                      dateFormat: "d.m.Y",
                       defaultDate: startDate,
                     }}
                     onChange={(date, str, config) => {
@@ -355,7 +357,7 @@ const FilterPanel = ({ data, filters, setFilteredData, translations }) => {
                   <Flatpickr
                     className="dateInput"
                     options={{
-                      // dateFormat: "d.m.Y",
+                      dateFormat: "d.m.Y",
                       defaultDate: endDate,
                     }}
                     onChange={(date, str, config) => {
