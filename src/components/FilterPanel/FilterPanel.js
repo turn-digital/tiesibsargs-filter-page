@@ -229,18 +229,18 @@ const FilterPanel = ({ data, filters, setFilteredData, translations }) => {
   };
 
   return (
-    <>
-      <div className="filtersWrapper">
-        <h2>{translations.search}</h2>
-        <input
-          defaultValue={searchQuery}
-          type="search"
-          className="searchFilter"
-          placeholder={translations.searchInputPlaceholder}
-          onChange={filterBySearch}
-        ></input>
+    <div className="cc-filter">
+      <h2 className="cc-filter__title">{translations.search}</h2>
+      <input
+        defaultValue={searchQuery}
+        type="search"
+        className="cc-filter__search"
+        placeholder={translations.searchInputPlaceholder}
+        onChange={filterBySearch}
+      ></input>
 
-        <Accordion allowZeroExpanded style={{ marginTop: "40px" }}>
+      <div className="cc-filter__acc">
+        <Accordion allowZeroExpanded>
           <AccordionItem>
             <AccordionItemHeading>
               <AccordionItemButton>
@@ -315,7 +315,7 @@ const FilterPanel = ({ data, filters, setFilteredData, translations }) => {
             <AccordionItemPanel>
               {filters?.categories.map((category) => {
                 return (
-                  <div key={category.id}>
+                  <div key={category.id} className="cc-filter-check">
                     <label htmlFor={category.id} key={category.id}>
                       <input
                         type="checkbox"
@@ -338,10 +338,10 @@ const FilterPanel = ({ data, filters, setFilteredData, translations }) => {
               <AccordionItemButton>{translations.date}</AccordionItemButton>
             </AccordionItemHeading>
             <AccordionItemPanel>
-              <div className="dateSection">
+              <div className="cc-filter-dp">
                 {startDate !== undefined && (
                   <Flatpickr
-                    className="dateInput"
+                    className="cc-filter-dp__input"
                     options={{
                       dateFormat: "d.m.Y",
                       defaultDate: startDate,
@@ -352,10 +352,10 @@ const FilterPanel = ({ data, filters, setFilteredData, translations }) => {
                   />
                 )}
 
-                <p style={{ marginTop: "15px", fontSize: "40px" }}>-</p>
+                <p className="cc-filter-dp__divider"></p>
                 {endDate !== undefined && (
                   <Flatpickr
-                    className="dateInput"
+                    className="cc-filter-dp__input"
                     options={{
                       dateFormat: "d.m.Y",
                       defaultDate: endDate,
@@ -367,9 +367,8 @@ const FilterPanel = ({ data, filters, setFilteredData, translations }) => {
                 )}
                 <button
                   type="submit"
-                  className="searchDateButton"
+                  className="cc-filter-dp__btn"
                   aria-label={translations.areaLabelButtonSearch}
-                  value="Skatīt ziņas pa periodiem"
                   onClick={() => {
                     filterDataByDateHandler();
                   }}
@@ -391,7 +390,7 @@ const FilterPanel = ({ data, filters, setFilteredData, translations }) => {
           </AccordionItem>
         </Accordion>
       </div>
-    </>
+    </div>
   );
 };
 

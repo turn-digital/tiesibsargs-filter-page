@@ -9,4 +9,6 @@ export default {
   fetchError: "Error occurred while fetching data.",
   filteredDataIsEmpty:
     "After applying all filters there is no data left that fits",
+  prev: "previous",
+  next: "next",
 };
